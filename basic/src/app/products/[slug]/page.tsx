@@ -1,16 +1,30 @@
+import { getProduct, getProducts } from "@/service/product";
+import { notFound } from "next/navigation";
+
 type Props = {
   params: {
     slug: string;
   };
 };
-export default function page({ params }: Props) {
-  return <div>{params.slug} 제품 설명 페이지</div>;
+
+export function generateMetadata({ params }: Props) {
+  return {
+    title: `제품의 이름: ${params.slug}`,
+  };
 }
 
-//generateStaticParams는 nextjs에서 만든 규격이다.
-export function generateStaticParams() {
-  const products = ["pants", "skirt"];
+export default async function ProductPage({ params: { slug } }: Props) {
+  const product = await getProduct(slug);
+
+  if (!product) {
+    notFound();
+  }
+  return <h1>{product.name} 제품 설명 페이지</h1>;
+}
+
+export async function generateStaticParams() {
+  const products = await getProducts();
   return products.map((product) => ({
-    slug: product,
+    slug: product.id,
   }));
 }
