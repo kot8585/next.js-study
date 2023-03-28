@@ -1,4 +1,5 @@
 import { getProduct, getProducts } from '@/service/products';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
 export const revalidate = 3;
@@ -22,7 +23,12 @@ export default async function ProductPage({ params: { slug } }: Props) {
     notFound();
   }
 
-  return <h1>{product.name} 제품 설명 페이지</h1>;
+  return (
+    <>
+  <h1>{product.name} 제품 설명 페이지</h1>
+  <Image src={product.image} alt="상품 사진" width={500} height={500}/>
+  </>
+  );
 }
 
 export async function generateStaticParams() {
